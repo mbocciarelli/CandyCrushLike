@@ -1,36 +1,22 @@
-#include <SFML/Graphics.hpp>
-#include "Grille.h"
-#include "Item.h"
+#include <iostream>
+#include "./headers/Grille.h"
+#include "./headers/Item.h"
+#include "./headers/candy.h"
+
 
 int main()
 {
-    /*sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
-    sf::CircleShape shape(100.f);
-    shape.setFillColor(sf::Color::Green);
-
-    while (window.isOpen())
-    {
-        sf::Event event;
-        while (window.pollEvent(event))
-        {
-            if (event.type == sf::Event::Closed)
-                window.close();
-        }
-
-        window.clear();
-        window.draw(shape);
-        window.display();
-    }*/
-
-    Item* tab[2][2];
-    
-    tab[0][0] = new Item("a");
-    tab[1][0] = new Item("b");
-    tab[0][1] = new Item("a");
-    tab[1][1] = new Item("a");
 
     Grille grille = new Grille(2, 2);
-    grille.setTab(*tab);
+    //Item tab = grille.getArray()
+
+    grille.setArrItem(0, 0,  Item("aa"));
+    grille.setArrItem(0, 1, Item("ab"));
+    grille.setArrItem(1, 0, Item("ba"));
+    grille.setArrItem(1, 1, Item("bb"));
+
     grille.afficher();
+
+    //std::cout << "coucou" << std::endl;
     return 0;
 }
