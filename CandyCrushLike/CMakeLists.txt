@@ -3,7 +3,7 @@ project(HelloSFML)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
-set(SOURCE_FILES main.cpp headers/main.h headers/candy.h components/candy.cpp components/test.cpp headers/test.h components/sfml_test.cpp headers/sfml_test.h components/Item.cpp headers/Item.h components/Grille.cpp headers/Grille.h)
+set(SOURCE_FILES main.cpp headers/main.h headers/candy.h components/candy.cpp components/test.cpp headers/test.h components/sfml_test.cpp headers/sfml_test.h components/Item.cpp headers/Item.h components/Grille.cpp headers/Grille.h components/sfml_object.cpp headers/sfml_object.h components/mouse_button.cpp components/mouse_button.h)
 add_executable(HelloSFML ${SOURCE_FILES})
 include_directories(/usr/local/include)
 

@@ -17,6 +17,11 @@ int main()
 
     grille.afficher();
 
-    //std::cout << "coucou" << std::endl;
+    //std::cout << "coucou" << std::endl;*/
+    /*sfml_object o_sfml;
+    o_sfml.createWindow();
+    o_sfml.testCircle();*/
+    sfml_test();
+
     return 0;
 }
