@@ -7,6 +7,10 @@
 
 
 #include <SFML/Window/Event.hpp>
-int where_is_clic(sf::Event event);
+#include "Grille.h"
+#include "Click.h"
+
+
+//Click where_is_clic(sf::Event event, Grille grille, int wWidth, int wHeight);
 
 #endif //HELLOSFML_MOUSE_BUTTON_H

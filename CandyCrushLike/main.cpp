@@ -1,13 +1,10 @@
 #include <iostream>
-#include "./headers/Grille.h"
-#include "./headers/Item.h"
-#include "./headers/candy.h"
-
+#include "./headers/main.h"
 
 int main()
 {
 
-    Grille grille = new Grille(2, 2);
+    /*Grille grille = new Grille(2, 2);
     //Item tab = grille.getArray()
 
     grille.setArrItem(0, 0,  Item("aa"));
@@ -21,7 +18,8 @@ int main()
     /*sfml_object o_sfml;
     o_sfml.createWindow();
     o_sfml.testCircle();*/
-    sfml_test();
+    Grille grille = new Grille(10, 16);
+    sfml_test(grille);
 
     return 0;
 }
