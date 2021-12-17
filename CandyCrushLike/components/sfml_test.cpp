@@ -69,7 +69,7 @@ bool eventClickLeft(sf::Event event) {
     return event.mouseButton.button == sf::Mouse::Left;
 }
 
-Click* TestClick(sf::Event event, Click* tabClick, Grille grille){
+Click* TestClick(sf::Event event, Click* tabClick, Grille* grille) {
     std::cout << "the left button was pressed" << std::endl;
     std::cout << "mouse x: " << event.mouseButton.x << std::endl;
     std::cout << "mouse y: " << event.mouseButton.y << std::endl;
@@ -83,6 +83,7 @@ Click* TestClick(sf::Event event, Click* tabClick, Grille grille){
         std::cout << "------" << std::endl;
     }
     return tabClick;
+}
 
 void loadTexture(Grille* grille) {
     grille->loadTexture(Bonbon::BLUE, "asset/Blue.png");

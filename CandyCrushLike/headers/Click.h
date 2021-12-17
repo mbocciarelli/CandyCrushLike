@@ -32,7 +32,7 @@ public:
 
 int compareClick(Click *tabClick);
 
-Click where_is_clic(sf::Event event, Grille grille, int wWidth, int wHeight);
+Click where_is_clic(sf::Event event, Grille* grille, int wWidth, int wHeight);
 
 bool LeftOrRightBox(Click c1, Click c2);
 

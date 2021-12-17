@@ -23,6 +23,6 @@ Bonbon generateItem(int min, int max);
 
 bool eventClickLeft(sf::Event event);
 
-Click* TestClick(sf::Event event, Click* tabClick, Grille grille);
+Click* TestClick(sf::Event event, Click* tabClick, Grille* grille);
 
 #endif //HELLOSFML_SFML_TEST_H
