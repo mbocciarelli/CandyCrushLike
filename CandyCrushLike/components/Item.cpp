@@ -1,16 +1,11 @@
 #include "../headers/Item.h"
 
 Item::Item() {
-}
-Item::Item(std::string name) {
-    this->name = name;
+	s = new sf::Sprite();
 }
 
-std::string Item::getName() {
-    return this->name;
-}
+Item::Item(sf::Sprite* sprite, Bonbon name)
+	: s(sprite), name(name) {
 
-void Item::setName(std::string name) {
-    this->name = name;
 }
 

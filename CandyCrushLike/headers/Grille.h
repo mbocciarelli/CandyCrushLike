@@ -3,33 +3,57 @@
 #include "Item.h"
 #include <stdio.h>
 #include <iostream>
+#include <map>
+#include <SFML/Graphics/Texture.hpp>
+#include "../Bonbon.h"
 
 class Grille {
 private :
     int hauteur;
     int largeur;
     Item *array;
+    std::map<Bonbon, sf::Texture*> mapTexture;
 
 public :
     Grille();
 
     Grille(int, int);
 
-    Grille(Grille *);
+    int getHauteur() const {
+        return this->hauteur;
+    };
 
-    int getHauteur() const;
+    int getLargeur() const {
+        return this->largeur;
+    };
 
-    int getLargeur() const;
+    Item* getArray() const {
+        return this->array;
+    };
 
-    Item *getArray();
+    Item* getArrItem(int h, int l) const {
+        return &this->array[(h * this->hauteur) + l];
+    };
 
-    Item getArrItem(int h, int l);
+    void setArrItem(int h, int l, Item val) {
+        this->array[(h * this->hauteur) + l] = val;
+    };
 
-    //void setArrItem(int h, int l, std::string val);
-    void setArrItem(int h, int l, Item val);
+    void setArray(Item *arr) {
+        this->array = arr;
+    };
 
-    void afficher();
+    void loadTexture(Bonbon name, std::string path) {
+        createNewTexture(name);
+        mapTexture.at(name)->loadFromFile(path);
+    };
 
-    void setArray(Item *arr);
+    void createNewTexture(Bonbon name) {
+        mapTexture.insert(std::pair<Bonbon, sf::Texture*>(name, new sf::Texture()));
+    }
+
+    sf::Texture* getTexture(Bonbon name) const {
+        return mapTexture.at(name);
+    }
 };
 

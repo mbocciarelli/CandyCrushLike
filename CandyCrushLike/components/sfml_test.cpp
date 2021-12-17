@@ -6,27 +6,33 @@
 #include <iostream>
 #include "../headers/sfml_test.h"
 #include "../SFML/Graphics.hpp"
+#include "../headers/Grille.h"
+#include "../SFML/Graphics/Sprite.hpp"
 
 
-int wWidth = 1800;
-int wHeight = 1200;
-
+int wWidth = 1920;
+int wHeight = 1080;
+sf::RenderWindow window(sf::VideoMode(wWidth, wHeight), "SFML works!");
 
 int sfml_test() {
-    sf::RenderWindow window(sf::VideoMode(wWidth, wHeight), "SFML works!");
-/*
-    sf::CircleShape shape(100.f);
-    shape.setPosition(0.f, 0.f);
-    shape.setFillColor(sf::Color::Green);
+    int widthGrille = 10;
+    int heightGrille = 10;
 
-    sf::CircleShape shape2(100.f);
-    shape2.setPosition(10.f, 0.f);
-    shape2.setFillColor(sf::Color::Red);
+    int widthMarge = (wWidth * 400) / 1920;
+    int heightMarge = (wHeight * 240) / 1080;
 
-    sf::CircleShape shape3(100.f);
-    shape3.setPosition(300.f, 100.f);
-    shape3.setFillColor(sf::Color::Blue);
-*/
+    int xFirstPoint = widthMarge / 2;
+    int yFirstPoint = heightMarge / 2;
+    int sizeCell = (((float)wWidth / (float)wHeight) * 75) / (1920.0 / 1080.0);
+    float sizeSprite = (((float)wWidth / (float)wHeight) * 1.5) / (1920.0 / 1080.0);
+
+    std::cout << window.getSize().x << " " << window.getSize().y << std::endl;
+    std::cout << xFirstPoint << " " << yFirstPoint << std::endl;
+    std::cout << sizeCell << " " << sizeSprite << std::endl;
+
+    std::srand(std::time(nullptr));
+    Grille* grille = load(widthGrille, heightGrille, xFirstPoint, yFirstPoint, sizeCell, sizeSprite);
+
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -47,29 +53,94 @@ int sfml_test() {
                     std::cout << "mouse y: " << event.mouseButton.y << std::endl;
                 }
             }
-
-
         }
 
-
-        window.clear(sf::Color::Black);
-        for (unsigned int i = 0; i < (wWidth / 8); i++) {
-            sf::Vertex line[] =
-                    {
-                            sf::Vertex(sf::Vector2f(i * (wWidth / 8), 0), sf::Color::White),
-                            sf::Vertex(sf::Vector2f(i * (wWidth / 8), wHeight), sf::Color::White)
-                    };
-            window.draw(line, 2, sf::Lines);
-        }
-        for (unsigned int i = 0; i < (wHeight / 8); i++) {
-            sf::Vertex line[] =
-                    {
-                            sf::Vertex(sf::Vector2f(0, i * (wHeight / 8)), sf::Color::White),
-                            sf::Vertex(sf::Vector2f(wWidth, i * (wHeight / 8)), sf::Color::White)
-                    };
-            window.draw(line, 2, sf::Lines);
-        }
-        window.display();
+        dessinerJeu(grille);
     }
     return 0;
+}
+
+Grille* load(int widthGrille, int heightGrille, int xFirstPoint, int yFirstPoint, int sizeCell, float sizeSprite) {
+
+    Grille* grille = new Grille(widthGrille, heightGrille);
+
+    loadTexture(grille);
+
+    loadSprite(grille, widthGrille, heightGrille, xFirstPoint, yFirstPoint, sizeCell, sizeSprite);
+
+    return grille;
+}
+
+void loadTexture(Grille* grille) {
+    grille->loadTexture(Bonbon::BLUE, "asset/Blue.png");
+    grille->loadTexture(Bonbon::GREEN, "asset/Green.png");
+    grille->loadTexture(Bonbon::ORANGE, "asset/Orange.png");
+    grille->loadTexture(Bonbon::PURPLE, "asset/Purple.png");
+    grille->loadTexture(Bonbon::RED, "asset/Red.png");
+    grille->loadTexture(Bonbon::YELLOW, "asset/Yellow.png");
+}
+
+void loadSprite(Grille* grille, int widthGrille, int heightGrille, int xFirstPoint, int yFirstPoint, int sizeCell, float sizeSprite) {
+    for (int i = 0; i < widthGrille; i++) {
+        for (int j = 0; j < heightGrille; j++) {
+
+            grille->setArrItem(i, j, Item());
+
+            Bonbon itemName = generateItem(1, 6); // 6 Textures max
+            grille->getArrItem(i, j)->setName(itemName);
+
+            grille->getArrItem(i, j)->getSprite()->setTexture(*grille->getTexture(itemName));
+            grille->getArrItem(i, j)->getSprite()->setScale(sizeSprite, sizeSprite);
+            grille->getArrItem(i, j)->getSprite()->setPosition(j * sizeCell + xFirstPoint, i * sizeCell + yFirstPoint);
+        }
+    }
+}
+
+void dessinerJeu(Grille* grille) {
+
+    window.clear(sf::Color::Black);
+
+    for (int i = 0; i < grille->getHauteur(); i++) {
+        for (int j = 0; j < grille->getLargeur(); j++) {
+            window.draw(*grille->getArrItem(i, j)->getSprite());
+        }
+    }
+
+    window.display();
+}
+
+//Min et max son inclu dans le rand
+Bonbon generateItem(int min, int max) {
+    Bonbon b;
+
+    int random = rand() % max + min;
+
+    switch (random) {
+    
+        case 1 :
+            b = Bonbon::BLUE;
+            break;
+
+        case 2:
+            b = Bonbon::GREEN;
+            break;
+
+        case 3:
+            b = Bonbon::ORANGE;
+            break;
+
+        case 4:
+            b = Bonbon::PURPLE;
+            break;
+
+        case 5:
+            b = Bonbon::RED;
+            break;
+
+        case 6:
+            b = Bonbon::YELLOW;
+            break;
+    }
+
+    return b;
 }
