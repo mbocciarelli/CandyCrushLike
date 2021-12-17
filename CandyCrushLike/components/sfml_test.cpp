@@ -17,9 +17,12 @@ sf::RenderWindow window(sf::VideoMode(wWidth, wHeight), "SFML works!");
 int sfml_test() {
     int widthGrille = 10;
     int heightGrille = 10;
+    auto *tabClick = new Click[2];
 
     int widthMarge = (wWidth * 400) / 1920;
     int heightMarge = (wHeight * 240) / 1080;
+    tabClick[0] = Click(0, 0, 0);
+    tabClick[1] = Click(0, 0, 0);
 
     int xFirstPoint = widthMarge / 2;
     int yFirstPoint = heightMarge / 2;
@@ -39,22 +42,13 @@ int sfml_test() {
             if (event.type == sf::Event::Closed)
                 window.close();
             else if (event.type == sf::Event::MouseButtonPressed) {
-                if (event.mouseButton.button == sf::Mouse::Left) {
-
-                    std::cout << "the left button was pressed" << std::endl;
-                    std::cout << "mouse x: " << event.mouseButton.x << std::endl;
-                    std::cout << "mouse y: " << event.mouseButton.y << std::endl;
-                }
-            }
-            else if (event.type == sf::Event::MouseButtonReleased) {
-                if (event.mouseButton.button == sf::Mouse::Left) {
-                    std::cout << "the left button was released" << std::endl;
-                    std::cout << "mouse x: " << event.mouseButton.x << std::endl;
-                    std::cout << "mouse y: " << event.mouseButton.y << std::endl;
+                if (eventClickLeft(event)) {
+                    tabClick = TestClick(event, tabClick, grille);
                 }
             }
         }
 
+                   
         dessinerJeu(grille);
     }
     return 0;
@@ -70,6 +64,25 @@ Grille* load(int widthGrille, int heightGrille, int xFirstPoint, int yFirstPoint
 
     return grille;
 }
+
+bool eventClickLeft(sf::Event event) {
+    return event.mouseButton.button == sf::Mouse::Left;
+}
+
+Click* TestClick(sf::Event event, Click* tabClick, Grille grille){
+    std::cout << "the left button was pressed" << std::endl;
+    std::cout << "mouse x: " << event.mouseButton.x << std::endl;
+    std::cout << "mouse y: " << event.mouseButton.y << std::endl;
+    Click lastClick = where_is_clic(event, grille, wWidth, wHeight);
+    tabClick[0] = tabClick[1];
+    tabClick[1] = lastClick;
+    if (tabClick[0].getStatus() != 0) {
+        std::cout << compareClick(tabClick) << std::endl;
+        tabClick[0] = Click(0, 0, 0);
+        tabClick[1] = Click(0, 0, 0);
+        std::cout << "------" << std::endl;
+    }
+    return tabClick;
 
 void loadTexture(Grille* grille) {
     grille->loadTexture(Bonbon::BLUE, "asset/Blue.png");

@@ -5,6 +5,9 @@
 #define HELLOSFML_SFML_TEST_H
 
 #include "Grille.h"
+#include "../SFML/Graphics.hpp"
+#include "Click.h"
+
 
 int sfml_test();
 
@@ -17,5 +20,9 @@ void loadSprite(Grille* grille, int widthGrille, int heightGrille, int xFirstPoi
 void dessinerJeu(Grille* grille);
 
 Bonbon generateItem(int min, int max);
+
+bool eventClickLeft(sf::Event event);
+
+Click* TestClick(sf::Event event, Click* tabClick, Grille grille);
 
 #endif //HELLOSFML_SFML_TEST_H
