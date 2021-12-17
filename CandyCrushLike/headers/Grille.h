@@ -5,7 +5,7 @@
 #include <iostream>
 #include <map>
 #include <SFML/Graphics/Texture.hpp>
-#include "../Bonbon.h"
+#include "../headers/Bonbon.h"
 
 class Grille {
 private :

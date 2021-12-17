@@ -15,8 +15,8 @@ int wHeight = 1080;
 sf::RenderWindow window(sf::VideoMode(wWidth, wHeight), "SFML works!");
 
 int sfml_test() {
-    int widthGrille = 10;
-    int heightGrille = 10;
+    int widthGrille = 20;
+    int heightGrille = 15;
     auto *tabClick = new Click[2];
 
     int widthMarge = (wWidth * 400) / 1920;
@@ -27,7 +27,28 @@ int sfml_test() {
     int xFirstPoint = widthMarge / 2;
     int yFirstPoint = heightMarge / 2;
     int sizeCell = (((float)wWidth / (float)wHeight) * 75) / (1920.0 / 1080.0);
+    
+    if (sizeCell > ((wWidth - widthMarge) / widthGrille || sizeCell > ((wHeight - heightMarge) / heightGrille ))) {
+        if (((wWidth - widthMarge) / widthGrille) > ((wHeight - heightMarge) / heightGrille)) {
+            sizeCell = (wHeight - heightMarge) / heightGrille;
+        }
+        else {
+            sizeCell = (wWidth - widthMarge) / widthGrille;
+        }
+    }
+
     float sizeSprite = (((float)wWidth / (float)wHeight) * 1.5) / (1920.0 / 1080.0);
+    
+    if ((widthGrille / 10) < (heightGrille / 10)) {
+        sizeSprite = sizeSprite / (heightGrille / 10);
+    }
+    else {
+        sizeSprite = sizeSprite / (widthGrille / 10);
+    }
+
+    if (sizeSprite > 2) {
+        sizeSprite = 2;
+    }
 
     std::cout << window.getSize().x << " " << window.getSize().y << std::endl;
     std::cout << xFirstPoint << " " << yFirstPoint << std::endl;
@@ -95,8 +116,8 @@ void loadTexture(Grille* grille) {
 }
 
 void loadSprite(Grille* grille, int widthGrille, int heightGrille, int xFirstPoint, int yFirstPoint, int sizeCell, float sizeSprite) {
-    for (int i = 0; i < widthGrille; i++) {
-        for (int j = 0; j < heightGrille; j++) {
+    for (int i = 0; i < heightGrille; i++) {
+        for (int j = 0; j < widthGrille; j++) {
 
             grille->setArrItem(i, j, Item());
 
@@ -114,8 +135,8 @@ void dessinerJeu(Grille* grille) {
 
     window.clear(sf::Color::Black);
 
-    for (int i = 0; i < grille->getHauteur(); i++) {
-        for (int j = 0; j < grille->getLargeur(); j++) {
+    for (int i = 0; i < grille->getLargeur(); i++) {
+        for (int j = 0; j < grille->getHauteur(); j++) {
             window.draw(*grille->getArrItem(i, j)->getSprite());
         }
     }
