@@ -9,23 +9,37 @@
 #include "../headers/Grille.h"
 #include "../SFML/Graphics/Sprite.hpp"
 
+#include "../ImGUI/imgui.h"
+#include "../ImGUI/imgui-SFML.h"
+
+enum State{
+    WaitAction,
+    Pause,
+    Animation,
+};
+
 
 int wWidth = 1920;
 int wHeight = 1080;
+
+int xFirstPoint;
+int yFirstPoint;
+
 sf::RenderWindow window(sf::VideoMode(wWidth, wHeight), "SFML works!");
 
+ImGui::SFML::Init(window, static_cast<sf::Vector2f>(window.getSize()), true);
 int sfml_test() {
-    int widthGrille = 20;
-    int heightGrille = 15;
+    int widthGrille = 3;
+    int heightGrille = 3;
     auto *tabClick = new Click[2];
 
-    int widthMarge = (wWidth * 400) / 1920;
-    int heightMarge = (wHeight * 240) / 1080;
+    int widthMarge = (wWidth * 400) / wWidth;
+    int heightMarge = (wHeight * 240) / wHeight;
     tabClick[0] = Click(0, 0, 0);
     tabClick[1] = Click(0, 0, 0);
 
-    int xFirstPoint = widthMarge / 2;
-    int yFirstPoint = heightMarge / 2;
+    xFirstPoint = widthMarge / 2;
+    yFirstPoint = heightMarge / 2;
     int sizeCell = (((float)wWidth / (float)wHeight) * 75) / (1920.0 / 1080.0);
     
     if (sizeCell > ((wWidth - widthMarge) / widthGrille || sizeCell > ((wHeight - heightMarge) / heightGrille ))) {
@@ -37,7 +51,7 @@ int sfml_test() {
         }
     }
 
-    float sizeSprite = (((float)wWidth / (float)wHeight) * 1.5) / (1920.0 / 1080.0);
+    float sizeSprite = (((float)wWidth / (float)wHeight) * 1.5) / (1920.0f / 1080.0f);
     
     if ((widthGrille / 10) < (heightGrille / 10)) {
         sizeSprite = sizeSprite / (heightGrille / 10);
@@ -51,15 +65,17 @@ int sfml_test() {
     }
 
     std::cout << window.getSize().x << " " << window.getSize().y << std::endl;
-    std::cout << xFirstPoint << " " << yFirstPoint << std::endl;
+    std::cout << "xFirstPoint : "<< xFirstPoint << " " << " ; yFirstPoint : "<< yFirstPoint << std::endl;
     std::cout << sizeCell << " " << sizeSprite << std::endl;
 
     std::srand(std::time(nullptr));
     Grille* grille = load(widthGrille, heightGrille, xFirstPoint, yFirstPoint, sizeCell, sizeSprite);
 
+    sf::Clock deltaClock;
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
+            ImGui::SFML::ProcessEvent(event);
             if (event.type == sf::Event::Closed)
                 window.close();
             else if (event.type == sf::Event::MouseButtonPressed) {
@@ -68,10 +84,12 @@ int sfml_test() {
                 }
             }
         }
+        ImGui::SFML::Update(window, deltaClock.restart());
 
                    
         dessinerJeu(grille);
     }
+    ImGui::SFML::Shutdown();
     return 0;
 }
 
@@ -140,7 +158,7 @@ void dessinerJeu(Grille* grille) {
             window.draw(*grille->getArrItem(i, j)->getSprite());
         }
     }
-
+    ImGui::SFML::Render(window);
     window.display();
 }
 
@@ -148,34 +166,7 @@ void dessinerJeu(Grille* grille) {
 Bonbon generateItem(int min, int max) {
     Bonbon b;
 
-    int random = rand() % max + min;
+    int random = rand() % (max-1) + (min-1);
 
-    switch (random) {
-    
-        case 1 :
-            b = Bonbon::BLUE;
-            break;
-
-        case 2:
-            b = Bonbon::GREEN;
-            break;
-
-        case 3:
-            b = Bonbon::ORANGE;
-            break;
-
-        case 4:
-            b = Bonbon::PURPLE;
-            break;
-
-        case 5:
-            b = Bonbon::RED;
-            break;
-
-        case 6:
-            b = Bonbon::YELLOW;
-            break;
-    }
-
-    return b;
+    return (Bonbon)random;
 }

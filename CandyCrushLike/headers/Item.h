@@ -2,7 +2,7 @@
 
 #include <string>
 #include <SFML/Graphics/Sprite.hpp>
-#include "../headers/Bonbon.h"
+#include "./Bonbon.h"
 
 class Item {
 private:
