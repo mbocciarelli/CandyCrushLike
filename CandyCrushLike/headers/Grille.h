@@ -7,14 +7,33 @@
 #include <SFML/Graphics/Texture.hpp>
 #include "../headers/Bonbon.h"
 
+struct Cell {
+    int h;
+    int l;
+};
+
 class Grille {
-private :
+private:
     int hauteur;
     int largeur;
-    Item *array;
+    std::vector<Item*> array;
+    std::vector<Cell> arrayToDestruct;
     std::map<Bonbon, sf::Texture*> mapTexture;
 
-public :
+    struct offset
+    {
+        int hauteur;
+        int largeur;
+
+        offset(int h, int l) {
+            hauteur = h;
+            largeur = l;
+        };
+    };
+
+    bool IsSameBonbon(int hauteur, int largeur, offset item1, offset item2, offset item3);
+
+public:
     Grille();
 
     Grille(int, int);
@@ -27,19 +46,19 @@ public :
         return this->largeur;
     };
 
-    Item* getArray() const {
+    std::vector<Item*> getArray() const {
         return this->array;
     };
 
     Item* getArrItem(int h, int l) const {
-        return &this->array[(h * this->hauteur) + l];
+        return this->array[(h * (int)this->hauteur) + l];
     };
 
-    void setArrItem(int h, int l, Item val) {
-        this->array[(h * this->hauteur) + l] = val;
+    void setArrItem(Item* val) {
+        this->array.push_back(val);
     };
 
-    void setArray(Item *arr) {
+    void setArray(std::vector<Item*> arr) {
         this->array = arr;
     };
 
@@ -55,5 +74,11 @@ public :
     sf::Texture* getTexture(Bonbon name) const {
         return mapTexture.at(name);
     }
-};
 
+    bool checkIfPlayable();
+
+    void testLineColumn(Bonbon& previousCandy, int* nb, std::vector<Cell>* tempPositions, int l, int h);
+
+    bool CheckMatch();
+
+};

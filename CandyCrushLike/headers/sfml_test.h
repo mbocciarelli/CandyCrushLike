@@ -6,10 +6,14 @@
 
 #include "Grille.h"
 #include "../SFML/Graphics.hpp"
-#include "Click.h"
-
 
 int sfml_test();
+
+void CalculParameters();
+
+void CalculSizeCell();
+
+void CalculSizeSprite();
 
 Grille* load(int widthGrille, int heightGrille, int xFirstPoint, int yFirstPoint, int sizeCell, float sizeSprite);
 
@@ -21,8 +25,22 @@ void dessinerJeu(Grille* grille);
 
 Bonbon generateItem(int min, int max);
 
+Bonbon generateItemWithExcludeItem(int min, int max, int valueExclude);
+
 bool eventClickLeft(sf::Event event);
 
-Click* TestClick(sf::Event event, Click* tabClick, Grille* grille);
+void checkMouseEvent();
+
+bool IsOnGrid(int xClick, int yClick);
+
+void UpdateGrille();
+
+void UpdateSizeItem(Item* item, int i, int j);
+
+Cell GetCell(int xClick, int yClick);
+
+void SwapCell(Cell from, Cell to);
+
+bool IsAroundPrevCell(Cell cell);
 
 #endif //HELLOSFML_SFML_TEST_H
