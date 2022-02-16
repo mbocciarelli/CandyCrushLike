@@ -122,12 +122,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\Cours Ynov\ProgrammationJeux\CandyCrushLike\SFML-2.5.1\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Cours Ynov\SFML-2.5.1\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>D:\Cours Ynov\ProgrammationJeux\CandyCrushLike\SFML-2.5.1\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\Cours Ynov\SFML-2.5.1\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -151,7 +151,29 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="components\candy.cpp" />
+    <ClCompile Include="components\Grille.cpp" />
+    <ClCompile Include="components\Item.cpp" />
+    <ClCompile Include="components\sfml_test.cpp" />
+    <ClCompile Include="components\test.cpp" />
     <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Bonbon.h" />
+    <ClInclude Include="headers\candy.h" />
+    <ClInclude Include="headers\Grille.h" />
+    <ClInclude Include="headers\Item.h" />
+    <ClInclude Include="headers\main.h" />
+    <ClInclude Include="headers\sfml_test.h" />
+    <ClInclude Include="headers\test.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="asset\Blue.png" />
+    <Image Include="asset\Green.png" />
+    <Image Include="asset\Orange.png" />
+    <Image Include="asset\Purple.png" />
+    <Image Include="asset\Red.png" />
+    <Image Include="asset\Yellow.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

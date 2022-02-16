@@ -6,5 +6,6 @@ enum class Bonbon
     ORANGE,
     PURPLE,
     RED,
-    YELLOW
+    YELLOW,
+    AUCUN,
 };

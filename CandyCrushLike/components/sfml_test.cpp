@@ -12,43 +12,28 @@
 
 int wWidth = 1920;
 int wHeight = 1080;
-sf::RenderWindow window(sf::VideoMode(wWidth, wHeight), "SFML works!");
+
+int widthMarge;
+int heightMarge;
+
+int widthGrille = 10;
+int heightGrille = 10;
+
+int xFirstPoint;
+int yFirstPoint;
+int sizeCell;
+float sizeSprite;
+
+Cell prevCellClick;
+bool checkPrevCell = false;
+
+Grille* grille;
+
+sf::RenderWindow window(sf::VideoMode(wWidth, wHeight), "SFML works!", sf::Style::Close | sf::Style::Titlebar);
 
 int sfml_test() {
-    int widthGrille = 20;
-    int heightGrille = 15;
-    auto *tabClick = new Click[2];
 
-    int widthMarge = (wWidth * 400) / 1920;
-    int heightMarge = (wHeight * 240) / 1080;
-    tabClick[0] = Click(0, 0, 0);
-    tabClick[1] = Click(0, 0, 0);
-
-    int xFirstPoint = widthMarge / 2;
-    int yFirstPoint = heightMarge / 2;
-    int sizeCell = (((float)wWidth / (float)wHeight) * 75) / (1920.0 / 1080.0);
-    
-    if (sizeCell > ((wWidth - widthMarge) / widthGrille || sizeCell > ((wHeight - heightMarge) / heightGrille ))) {
-        if (((wWidth - widthMarge) / widthGrille) > ((wHeight - heightMarge) / heightGrille)) {
-            sizeCell = (wHeight - heightMarge) / heightGrille;
-        }
-        else {
-            sizeCell = (wWidth - widthMarge) / widthGrille;
-        }
-    }
-
-    float sizeSprite = (((float)wWidth / (float)wHeight) * 1.5) / (1920.0 / 1080.0);
-    
-    if ((widthGrille / 10) < (heightGrille / 10)) {
-        sizeSprite = sizeSprite / (heightGrille / 10);
-    }
-    else {
-        sizeSprite = sizeSprite / (widthGrille / 10);
-    }
-
-    if (sizeSprite > 2) {
-        sizeSprite = 2;
-    }
+    CalculParameters();
 
     std::cout << window.getSize().x << " " << window.getSize().y << std::endl;
     std::cout << xFirstPoint << " " << yFirstPoint << std::endl;
@@ -58,30 +43,71 @@ int sfml_test() {
     Grille* grille = load(widthGrille, heightGrille, xFirstPoint, yFirstPoint, sizeCell, sizeSprite);
 
     while (window.isOpen()) {
-        sf::Event event;
-        while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed)
-                window.close();
-            else if (event.type == sf::Event::MouseButtonPressed) {
-                if (eventClickLeft(event)) {
-                    tabClick = TestClick(event, tabClick, grille);
-                }
-            }
-        }
 
-                   
+        checkMouseEvent();
+
         dessinerJeu(grille);
     }
     return 0;
 }
 
+void CalculParameters() {
+    widthMarge = (wWidth * 400) / 1920;
+    heightMarge = (wHeight * 240) / 1080;
+
+    xFirstPoint = widthMarge / 2;
+    yFirstPoint = heightMarge / 2;
+
+    CalculSizeCell();
+
+    CalculSizeSprite();
+}
+
+void CalculSizeCell() {
+    int width = wWidth - widthMarge;
+    int height = wHeight - heightMarge;
+
+    sizeCell = (((float)wWidth / (float)wHeight) * 75) / (1920.0 / 1080.0);
+
+    if (sizeCell > (width / widthGrille || sizeCell > (height / heightGrille))) {
+        if ((width / widthGrille) > (height / heightGrille)) {
+            sizeCell = height / heightGrille;
+        }
+        else {
+            sizeCell = width / widthGrille;
+        }
+    }
+}
+
+void CalculSizeSprite() {
+    int width = widthGrille / 10;
+    int height = heightGrille / 10;
+
+    sizeSprite = (((float)wWidth / (float)wHeight) * 1.5) / (1920.0 / 1080.0);
+
+    if (width < height) {
+        sizeSprite = sizeSprite / height;
+    }
+    else {
+        sizeSprite = sizeSprite / width;
+    }
+
+    if (sizeSprite > 2) {
+        sizeSprite = 2;
+    }
+}
+
 Grille* load(int widthGrille, int heightGrille, int xFirstPoint, int yFirstPoint, int sizeCell, float sizeSprite) {
 
-    Grille* grille = new Grille(widthGrille, heightGrille);
+    grille = new Grille(widthGrille, heightGrille);
 
     loadTexture(grille);
 
     loadSprite(grille, widthGrille, heightGrille, xFirstPoint, yFirstPoint, sizeCell, sizeSprite);
+
+    if (widthGrille > 2 && heightGrille > 2) {
+        std::cout << grille->checkIfPlayable();
+    }
 
     return grille;
 }
@@ -90,20 +116,91 @@ bool eventClickLeft(sf::Event event) {
     return event.mouseButton.button == sf::Mouse::Left;
 }
 
-Click* TestClick(sf::Event event, Click* tabClick, Grille* grille) {
-    std::cout << "the left button was pressed" << std::endl;
-    std::cout << "mouse x: " << event.mouseButton.x << std::endl;
-    std::cout << "mouse y: " << event.mouseButton.y << std::endl;
-    Click lastClick = where_is_clic(event, grille, wWidth, wHeight);
-    tabClick[0] = tabClick[1];
-    tabClick[1] = lastClick;
-    if (tabClick[0].getStatus() != 0) {
-        std::cout << compareClick(tabClick) << std::endl;
-        tabClick[0] = Click(0, 0, 0);
-        tabClick[1] = Click(0, 0, 0);
-        std::cout << "------" << std::endl;
+void checkMouseEvent() {
+    sf::Event event;
+    while (window.pollEvent(event)) {
+
+
+        switch (event.type) {
+        case sf::Event::Closed:
+            window.close();
+            break;
+
+        case sf::Event::MouseButtonPressed:
+
+            if (!eventClickLeft(event))
+                break;
+
+            if (!IsOnGrid(event.mouseButton.x, event.mouseButton.y))
+                break;
+
+            Cell cell = GetCell(event.mouseButton.x, event.mouseButton.y);
+
+            if (!checkPrevCell) {
+                prevCellClick = cell;
+                checkPrevCell = true;
+                break;
+            }
+
+            if (!IsAroundPrevCell(cell))
+                break;
+
+            SwapCell(prevCellClick, cell);
+            checkPrevCell = false;
+            dessinerJeu(grille);
+            std::cout << grille->CheckMatch() << std::endl;
+
+            break;
+        }
     }
-    return tabClick;
+}
+
+bool IsOnGrid(int xClick, int yClick) {
+    xClick -= xFirstPoint;
+    yClick -= yFirstPoint;
+
+    return (
+        xClick >= 0 && xClick < (sizeCell* widthGrille)
+        && yClick >= 0 && yClick < (sizeCell* heightGrille)
+        );
+}
+
+bool IsAroundPrevCell(Cell cell) {
+    return (
+        prevCellClick.h == cell.h + 1 && prevCellClick.l == cell.l
+        || prevCellClick.h == cell.h - 1 && prevCellClick.l == cell.l
+        || prevCellClick.h == cell.h && prevCellClick.l == cell.l + 1
+        || prevCellClick.h == cell.h && prevCellClick.l == cell.l - 1
+        );
+}
+
+Cell GetCell(int xClick, int yClick) {
+    xClick -= xFirstPoint;
+    yClick -= yFirstPoint;
+
+    int xClickMarge = xClick % sizeCell;
+    int yClickMarge = yClick % sizeCell;
+
+    Cell cell;
+
+    int lig = (xClick - xClickMarge) / sizeCell;
+    int col = (yClick - yClickMarge) / sizeCell;
+    cell.h = col;
+    cell.l = lig;
+
+    return cell;
+}
+
+void SwapCell(Cell from, Cell to) {
+    Item* fromItem = grille->getArrItem(from.h, from.l);
+    Item* toItem = grille->getArrItem(to.h, to.l);
+
+    Bonbon temp = fromItem->getName();
+    fromItem->setName(toItem->getName());
+    toItem->setName(temp);
+
+    fromItem->getSprite()->setTexture(*grille->getTexture(fromItem->getName()));
+    toItem->getSprite()->setTexture(*grille->getTexture(toItem->getName()));
 }
 
 void loadTexture(Grille* grille) {
@@ -116,27 +213,39 @@ void loadTexture(Grille* grille) {
 }
 
 void loadSprite(Grille* grille, int widthGrille, int heightGrille, int xFirstPoint, int yFirstPoint, int sizeCell, float sizeSprite) {
-    for (int i = 0; i < heightGrille; i++) {
-        for (int j = 0; j < widthGrille; j++) {
+    for (int i = 0; i < grille->getHauteur(); i++) {
+        for (int j = 0; j < grille->getLargeur(); j++) {
 
-            grille->setArrItem(i, j, Item());
+            grille->setArrItem(new Item());
 
             Bonbon itemName = generateItem(1, 6); // 6 Textures max
+            if (i > 1) {
+                if (grille->getArrItem(i - 1, j)->getName() == itemName && grille->getArrItem(i - 2, j)->getName() == itemName) {
+                    itemName = generateItemWithExcludeItem(1, 6, (int)itemName);
+                }
+            }
+
+            if (j > 1) {
+                if (grille->getArrItem(i, j - 1)->getName() == itemName && grille->getArrItem(i, j - 2)->getName() == itemName) {
+                    itemName = generateItemWithExcludeItem(1, 6, (int)itemName);
+                }
+            }
+
             grille->getArrItem(i, j)->setName(itemName);
 
             grille->getArrItem(i, j)->getSprite()->setTexture(*grille->getTexture(itemName));
-            grille->getArrItem(i, j)->getSprite()->setScale(sizeSprite, sizeSprite);
-            grille->getArrItem(i, j)->getSprite()->setPosition(j * sizeCell + xFirstPoint, i * sizeCell + yFirstPoint);
+            UpdateSizeItem(grille->getArrItem(i, j), i, j);
         }
     }
 }
+
 
 void dessinerJeu(Grille* grille) {
 
     window.clear(sf::Color::Black);
 
-    for (int i = 0; i < grille->getLargeur(); i++) {
-        for (int j = 0; j < grille->getHauteur(); j++) {
+    for (int i = 0; i < grille->getHauteur(); i++) {
+        for (int j = 0; j < grille->getLargeur(); j++) {
             window.draw(*grille->getArrItem(i, j)->getSprite());
         }
     }
@@ -144,38 +253,80 @@ void dessinerJeu(Grille* grille) {
     window.display();
 }
 
+void UpdateGrille() {
+    for (int i = 0; i < grille->getHauteur(); i++) {
+        for (int j = 0; j < grille->getLargeur(); j++) {
+
+            UpdateSizeItem(grille->getArrItem(i, j), i, j);
+
+        }
+    }
+}
+
+void UpdateSizeItem(Item* item, int i, int j) {
+    item->getSprite()->setScale(sizeSprite, sizeSprite);
+    //item->getSprite()->move(0, sizeCell);
+    item->getSprite()->setPosition(j * sizeCell + xFirstPoint, i * sizeCell + yFirstPoint);
+}
+
 //Min et max son inclu dans le rand
 Bonbon generateItem(int min, int max) {
     Bonbon b;
 
+    min -= 1;
+    max -= 1;
+
     int random = rand() % max + min;
 
-    switch (random) {
-    
-        case 1 :
-            b = Bonbon::BLUE;
-            break;
+    return (Bonbon)random;
+}
 
-        case 2:
-            b = Bonbon::GREEN;
-            break;
+Bonbon generateItemWithExcludeItem(int min, int max, int valueExclude) {
+    Bonbon b;
 
-        case 3:
-            b = Bonbon::ORANGE;
-            break;
+    min -= 1;
+    max -= 1;
 
-        case 4:
-            b = Bonbon::PURPLE;
-            break;
+    if (valueExclude > max || valueExclude < min) {
+        int random = rand() % max + min;
 
-        case 5:
-            b = Bonbon::RED;
-            break;
-
-        case 6:
-            b = Bonbon::YELLOW;
-            break;
+        return (Bonbon)random;
     }
 
-    return b;
+    if (valueExclude == max) {
+        int random = rand() % (max - 1) + min;
+
+        return (Bonbon)random;
+    }
+    else if (valueExclude == min) {
+        int random = rand() % max + (min + 1);
+
+        return (Bonbon)random;
+    }
+    else {
+        int random1;
+        if (valueExclude == 1) {
+            random1 = 0;
+        }
+        else {
+            random1 = rand() % (valueExclude - 1) + min;
+        }
+
+        int random2 = rand() % max + (valueExclude + 1);
+
+        if (random1 > max) {
+            return (Bonbon)random2;
+        }
+
+        if (random2 > max) {
+            return (Bonbon)random1;
+        }
+
+        int random = rand() % 2;
+
+        if (random == 0)
+            return (Bonbon)random1;
+
+        return (Bonbon)random2;
+    }
 }
