@@ -39,8 +39,6 @@ void UpdateSizeItem(Item* item, int i, int j);
 
 Cell GetCell(int xClick, int yClick);
 
-void SwapCell(Cell from, Cell to);
-
 bool IsAroundPrevCell(Cell cell);
 
 #endif //HELLOSFML_SFML_TEST_H

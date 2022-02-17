@@ -145,10 +145,20 @@ void checkMouseEvent() {
             if (!IsAroundPrevCell(cell))
                 break;
 
-            SwapCell(prevCellClick, cell);
+            grille->SwapCell(prevCellClick, cell);
             checkPrevCell = false;
+
+            bool matchIsOk = grille->CheckMatch();
+            if (matchIsOk) {
+                grille->DestroyCells();
+                dessinerJeu(grille);
+                grille->ReorganizeCells();
+            }
+            else {
+                grille->SwapCell(cell, prevCellClick);
+            }
+
             dessinerJeu(grille);
-            std::cout << grille->CheckMatch() << std::endl;
 
             break;
         }
@@ -189,18 +199,6 @@ Cell GetCell(int xClick, int yClick) {
     cell.l = lig;
 
     return cell;
-}
-
-void SwapCell(Cell from, Cell to) {
-    Item* fromItem = grille->getArrItem(from.h, from.l);
-    Item* toItem = grille->getArrItem(to.h, to.l);
-
-    Bonbon temp = fromItem->getName();
-    fromItem->setName(toItem->getName());
-    toItem->setName(temp);
-
-    fromItem->getSprite()->setTexture(*grille->getTexture(fromItem->getName()));
-    toItem->getSprite()->setTexture(*grille->getTexture(toItem->getName()));
 }
 
 void loadTexture(Grille* grille) {
@@ -246,6 +244,9 @@ void dessinerJeu(Grille* grille) {
 
     for (int i = 0; i < grille->getHauteur(); i++) {
         for (int j = 0; j < grille->getLargeur(); j++) {
+            if (grille->getArrItem(i, j)->getName() == Bonbon::AUCUN)
+                continue;
+
             window.draw(*grille->getArrItem(i, j)->getSprite());
         }
     }

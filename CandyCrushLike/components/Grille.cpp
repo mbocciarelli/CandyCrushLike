@@ -197,8 +197,9 @@ bool Grille::checkIfPlayable() {
 void Grille::testLineColumn(Bonbon& previousCandy, int* nb, std::vector<Cell>* tempPositions, int l, int h) {
     Bonbon candyTest;
     candyTest = getArrItem(h, l)->getName();
+
     if (previousCandy == candyTest) {
-        tempPositions->push_back(Cell{ h = h, l = l });
+        tempPositions->push_back(Cell(h, l));
         *nb = *nb + 1;
     }
     else {
@@ -208,7 +209,7 @@ void Grille::testLineColumn(Bonbon& previousCandy, int* nb, std::vector<Cell>* t
         }
         previousCandy = candyTest;
         tempPositions->clear();
-        tempPositions->push_back(Cell{ h = h, l = l });
+        tempPositions->push_back(Cell(h, l));
         *nb = 1;
     }
 }
@@ -243,4 +244,48 @@ bool Grille::IsSameBonbon(int hauteur, int largeur, offset item1, offset item2, 
     }
 
     return false;
+}
+
+void Grille::DestroyCells() {
+    for (int i = 0; i < arrayToDestruct.size(); i++) {
+        int h = arrayToDestruct.at(i).h;
+        int l = arrayToDestruct.at(i).l;
+
+        getArrItem(h, l)->setName(Bonbon::AUCUN);
+    }
+
+    arrayToDestruct.clear();
+}
+
+void Grille::ReorganizeCells() {
+    for (int i = getHauteur() - 2; i >= 0; i--) {
+        for (int j = getLargeur() - 2; j >= 0; j--) {
+            if (getArrItem(i, j)->getName() == Bonbon::AUCUN) {
+                int saveHauteur = i;
+                do {
+                    saveHauteur--;
+                } while (saveHauteur > 0 && getArrItem(saveHauteur, j)->getName() == Bonbon::AUCUN);
+
+                if (saveHauteur >= 0 && getArrItem(saveHauteur, j)->getName() != Bonbon::AUCUN) {
+                    SwapCell(Cell(saveHauteur, j), Cell(i, j));
+                }
+            }
+        }
+    }
+}
+
+void Grille::SwapCell(Cell from, Cell to) {
+    Item* fromItem = getArrItem(from.h, from.l);
+    Item* toItem = getArrItem(to.h, to.l);
+
+    Bonbon temp = fromItem->getName();
+    fromItem->setName(toItem->getName());
+    toItem->setName(temp);
+
+    if (fromItem->getName() != Bonbon::AUCUN) {
+        fromItem->getSprite()->setTexture(*getTexture(fromItem->getName()));
+    }
+    if (toItem->getName() != Bonbon::AUCUN) {
+        toItem->getSprite()->setTexture(*getTexture(toItem->getName()));
+    }
 }

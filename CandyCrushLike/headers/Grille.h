@@ -10,6 +10,9 @@
 struct Cell {
     int h;
     int l;
+
+    Cell() {};
+    Cell(int h, int l) : h(h), l(l) {}
 };
 
 class Grille {
@@ -80,5 +83,13 @@ public:
     void testLineColumn(Bonbon& previousCandy, int* nb, std::vector<Cell>* tempPositions, int l, int h);
 
     bool CheckMatch();
+
+    void DestroyCells();
+
+    void ReorganizeCells();
+
+    void RegenerateCells();
+
+    void SwapCell(Cell from, Cell to);
 
 };
