@@ -3,7 +3,7 @@ project(CandyCrushLike)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
-set(SOURCE_FILES main.cpp headers/main.h headers/candy.h components/candy.cpp components/test.cpp headers/test.h components/sfml_test.cpp headers/sfml_test.h components/Item.cpp headers/Item.h components/Grille.cpp headers/Grille.h components/sfml_object.cpp headers/sfml_object.h components/mouse_button.cpp headers/mouse_button.h components/MainMenu.cpp headers/MainMenu.h headers/State.h headers/StateMan.cpp headers/StateMan.h components/AssetMan.cpp headers/AssetMan.h)
+set(SOURCE_FILES main.cpp components/Game.cpp headers/Game.h components/Item.cpp headers/Item.h components/Grille.cpp headers/Grille.h components/MainMenu.cpp headers/MainMenu.h headers/State.h components/StateMan.cpp headers/StateMan.h components/AssetMan.cpp headers/AssetMan.h headers/make_unique.h components/GamePlay.cpp headers/GamePlay.h)
 add_executable(CandyCrushLike ${SOURCE_FILES})
 include_directories(/usr/local/include)
 

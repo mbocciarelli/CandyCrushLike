@@ -2,7 +2,7 @@
 
 #include <string>
 #include <SFML/Graphics/Sprite.hpp>
-#include "../headers/Bonbon.h"
+#include "Bonbon.h"
 
 class Item {
 private:
@@ -33,17 +33,5 @@ public:
     Bonbon getName() const {
         return name;
     };
-
-    void regenerateItem(int min, int max) {
-        Bonbon b;
-
-        min -= 1;
-        max -= 1;
-
-        int random = rand() % max + min;
-
-        this->name = (Bonbon)random;
-    }
-
 };
 

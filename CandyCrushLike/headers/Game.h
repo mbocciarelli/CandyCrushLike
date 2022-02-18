@@ -1,133 +1,48 @@
-//
-// Created by Daniel Chiquet on 12/11/2021.
-//
-#ifndef HELLOSFML_SFML_TEST_H
-#define HELLOSFML_SFML_TEST_H
-
+#pragma once
 #include <iostream>
 
 #include "Grille.h"
 #include "../SFML/Graphics.hpp"
-#include "../headers/Grille.h"
 #include "../SFML/Graphics/Sprite.hpp"
 
+#include "memory"
+#include "StateMan.h"
+#include "AssetMan.h"
+//#include "make_unique.h"
+
+enum AssetID
+{
+    MAIN_FONT = 0
+};
+
+struct Context
+{
+    std::unique_ptr<Engine::AssetMan> m_assets;
+    std::unique_ptr<Engine::StateMan> m_states;
+    std::unique_ptr<sf::RenderWindow> m_window;
+
+    Context()
+    {
+        m_assets = make_unique<Engine::AssetMan>();
+        m_states = make_unique<Engine::StateMan>();
+        m_window = make_unique<sf::RenderWindow>();
+    }
+};
+
 class Game {
-private : 
+private :
+    //State
+    std::shared_ptr<Context> m_context;
+    const sf::Time TIME_PER_FRAME = sf::seconds(1.f/60.f);
+
 	/*
-		Paramétres
+		Paramï¿½tres
 	*/
 	int wWidth = 1920;
 	int wHeight = 1080;
 
-	int widthMarge = 0;
-	int heightMarge = 0;
-
-	int widthGrille = 10;
-	int heightGrille = 10;
-
-	int xFirstPoint = 0;
-	int yFirstPoint = 0;
-	int sizeCell = 0;
-	double sizeSprite = 0;
-
-	/*
-		Text
-	*/
-
-	sf::Font font;
-
-	/*
-		Click
-	*/
-
-	Cell prevCellClick;
-	bool checkPrevCell = false;
-
-	/*
-		Fenêtre
-	*/
-
-	Grille* grille;
-
-	sf::RenderWindow window;
-
-	/*
-		Objectifs
-	*/
-	bool objectifIsFinish = false;
-
-	int coutSwap = 0;
-	int maxSwap = 0;
-	std::map<Bonbon, int> objectifs;
-	std::vector<int> coutObjectifs;
-
-	void afficherObjectifs();
-
 public :
-	Game() {
-		grille = nullptr;
-		window.create(sf::VideoMode(wWidth, wHeight), "SFML works!", sf::Style::Close | sf::Style::Titlebar);
-	}
+	Game();
 
 	void StartGame();
-
-	void RestartGame();
-
-	void CalculParameters();
-
-	void GenerateObjectifs();
-
-	void addCoutObjectifs(int place, int value, int maxValue) {
-		coutObjectifs.at(place) += value;
-		if(coutObjectifs.at(place) > maxValue)
-			coutObjectifs.at(place) = maxValue;
-	}
-
-	void checkObjectifs() {
-		int i = 0;
-		objectifIsFinish = true;
-		for (const auto& kv : objectifs) {
-			if (kv.second != coutObjectifs.at(i)) {
-				objectifIsFinish = false;
-				break;
-			}
-			i++;
-		}
-	}
-
-	void CalculSizeCell();
-
-	void CalculSizeSprite();
-
-	Grille* load(int widthGrille, int heightGrille, int xFirstPoint, int yFirstPoint, int sizeCell, double sizeSprite);
-
-	void loadTexture(Grille* grille);
-
-	void loadSprite(Grille* grille, int widthGrille, int heightGrille, int xFirstPoint, int yFirstPoint, int sizeCell, double sizeSprite);
-
-	void dessinerJeu(Grille* grille);
-
-	void dessinerResultat(bool result);
-
-	Bonbon generateBonbon(int min, int max);
-
-	Bonbon generateBonbonWithExcludeBonbon(int min, int max, int valueExclude);
-
-	bool eventClickLeft(sf::Event event);
-
-	void checkMouseEvent();
-
-	bool IsOnGrid(int xClick, int yClick);
-
-	void UpdateGrille();
-
-	void UpdateSizeItem(Item* item, int i, int j);
-
-	Cell GetCell(int xClick, int yClick);
-
-	bool IsAroundPrevCell(Cell cell);
-
-	void changeAlphaColor(Cell cell, int value);
 };
-
-#endif //HELLOSFML_SFML_TEST_H

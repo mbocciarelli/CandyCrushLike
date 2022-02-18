@@ -5,7 +5,7 @@
 #include <iostream>
 #include <map>
 #include <SFML/Graphics/Texture.hpp>
-#include "../headers/Bonbon.h"
+#include "Bonbon.h"
 
 struct Cell {
     int h;
