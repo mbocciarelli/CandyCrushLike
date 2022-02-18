@@ -6,7 +6,8 @@
 Grille::Grille() {
     this->hauteur = 10;
     this->largeur = 10;
-    this->array.reserve(hauteur * largeur);
+    int temp = hauteur * largeur;
+    this->array.reserve(temp);
 
     for (int i = 0; i < 6; i++) {
         bonbonToDestroy.emplace((Bonbon)i, 0);
@@ -17,7 +18,8 @@ Grille::Grille() {
 Grille::Grille(int h, int l) {
     this->hauteur = h;
     this->largeur = l;
-    this->array.reserve(hauteur * largeur);
+    int temp = hauteur * largeur;
+    this->array.reserve(temp);
 
     for (int i = 0; i < 6; i++) {
         bonbonToDestroy.emplace((Bonbon)i, 0);

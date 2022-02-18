@@ -6,7 +6,7 @@
 
 void Game::StartGame() {
 
-    std::srand(std::time(nullptr));
+    std::srand((unsigned int) std::time(nullptr));
 
     CalculParameters();
 
@@ -70,9 +70,13 @@ void Game::CalculSizeCell() {
     int width = wWidth - widthMarge;
     int height = wHeight - heightMarge;
 
-    sizeCell = (((float)wWidth / (float)wHeight) * 75) / (1920.0 / 1080.0);
+    double proportion = ((double)wWidth / (double)wHeight) * 75.0;
+    sizeCell = (int)(proportion / (1920.0 / 1080.0));
 
-    if (sizeCell > (width / widthGrille || sizeCell > (height / heightGrille))) {
+    if (
+        (sizeCell > (width / widthGrille)) 
+        || (sizeCell > (height / heightGrille))
+        ) {
         if ((width / widthGrille) > (height / heightGrille)) {
             sizeCell = height / heightGrille;
         }
@@ -86,7 +90,7 @@ void Game::CalculSizeSprite() {
     int width = widthGrille / 10;
     int height = heightGrille / 10;
 
-    sizeSprite = (((float)wWidth / (float)wHeight) * 1.5) / (1920.0 / 1080.0);
+    sizeSprite = (((double)wWidth / (double)wHeight) * 1.5) / (1920.0 / 1080.0);
 
     if (width < height) {
         sizeSprite = sizeSprite / height;
@@ -100,7 +104,7 @@ void Game::CalculSizeSprite() {
     }
 }
 
-Grille* Game::load(int widthGrille, int heightGrille, int xFirstPoint, int yFirstPoint, int sizeCell, float sizeSprite) {
+Grille* Game::load(int widthGrille, int heightGrille, int xFirstPoint, int yFirstPoint, int sizeCell, double sizeSprite) {
 
     grille = new Grille(widthGrille, heightGrille);
 
@@ -240,7 +244,7 @@ void Game::loadTexture(Grille* grille) {
     grille->loadTexture(Bonbon::YELLOW, "asset/Yellow.png");
 }
 
-void Game::loadSprite(Grille* grille, int widthGrille, int heightGrille, int xFirstPoint, int yFirstPoint, int sizeCell, float sizeSprite) {
+void Game::loadSprite(Grille* grille, int widthGrille, int heightGrille, int xFirstPoint, int yFirstPoint, int sizeCell, double sizeSprite) {
     for (int i = 0; i < grille->getHauteur(); i++) {
         for (int j = 0; j < grille->getLargeur(); j++) {
 
@@ -290,8 +294,8 @@ void Game::afficherObjectifs() {
     if (!font.loadFromFile("./asset/aAbstractGroovy.ttf"))
         return;
 
-    int xText = sizeCell * grille->getLargeur() + 500;
-    int yText = 100;
+    float xText = (float)((float)sizeCell * (float)grille->getLargeur() + 500.0);
+    float yText = 100.0;
 
     sf::Text textObjectifs;
     textObjectifs.setFont(font);
@@ -354,9 +358,12 @@ void Game::UpdateGrille() {
 }
 
 void Game::UpdateSizeItem(Item* item, int i, int j) {
-    item->getSprite()->setScale(sizeSprite, sizeSprite);
-    //item->getSprite()->move(0, sizeCell);
-    item->getSprite()->setPosition(j * sizeCell + xFirstPoint, i * sizeCell + yFirstPoint);
+    item->getSprite()->setScale((float)sizeSprite, (float)sizeSprite);
+    
+    float x = (float)(j * sizeCell + xFirstPoint);
+    float y = (float)(i * sizeCell + yFirstPoint);
+
+    item->getSprite()->setPosition(x, y);
 }
 
 void Game::changeAlphaColor(Cell cell, int value) {
@@ -367,8 +374,6 @@ void Game::changeAlphaColor(Cell cell, int value) {
 
 //Min et max son inclu dans le rand
 Bonbon Game::generateBonbon(int min, int max) {
-    Bonbon b;
-
     min -= 1;
     max -= 1;
 
@@ -378,8 +383,6 @@ Bonbon Game::generateBonbon(int min, int max) {
 }
 
 Bonbon Game::generateBonbonWithExcludeBonbon(int min, int max, int valueExclude) {
-    Bonbon b;
-
     min -= 1;
     max -= 1;
 

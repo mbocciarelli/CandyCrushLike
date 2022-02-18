@@ -19,16 +19,16 @@ private :
 	int wWidth = 1920;
 	int wHeight = 1080;
 
-	int widthMarge;
-	int heightMarge;
+	int widthMarge = 0;
+	int heightMarge = 0;
 
 	int widthGrille = 10;
 	int heightGrille = 10;
 
-	int xFirstPoint;
-	int yFirstPoint;
-	int sizeCell;
-	float sizeSprite;
+	int xFirstPoint = 0;
+	int yFirstPoint = 0;
+	int sizeCell = 0;
+	double sizeSprite = 0;
 
 	/*
 		Text
@@ -56,7 +56,7 @@ private :
 	*/
 
 	int coutSwap = 0;
-	int maxSwap;
+	int maxSwap = 0;
 	std::map<Bonbon, int> objectifs;
 	std::vector<int> coutObjectifs;
 
@@ -64,6 +64,7 @@ private :
 
 public :
 	Game() {
+		grille = nullptr;
 		window.create(sf::VideoMode(wWidth, wHeight), "SFML works!", sf::Style::Close | sf::Style::Titlebar);
 	}
 
@@ -75,7 +76,7 @@ public :
 
 	void addCoutObjectifs(int place, int value, int maxValue) {
 		coutObjectifs.at(place) += value;
-		if (coutObjectifs.at(place) > maxValue)
+		if(coutObjectifs.at(place) > maxValue)
 			coutObjectifs.at(place) = maxValue;
 	}
 
@@ -83,11 +84,11 @@ public :
 
 	void CalculSizeSprite();
 
-	Grille* load(int widthGrille, int heightGrille, int xFirstPoint, int yFirstPoint, int sizeCell, float sizeSprite);
+	Grille* load(int widthGrille, int heightGrille, int xFirstPoint, int yFirstPoint, int sizeCell, double sizeSprite);
 
 	void loadTexture(Grille* grille);
 
-	void loadSprite(Grille* grille, int widthGrille, int heightGrille, int xFirstPoint, int yFirstPoint, int sizeCell, float sizeSprite);
+	void loadSprite(Grille* grille, int widthGrille, int heightGrille, int xFirstPoint, int yFirstPoint, int sizeCell, double sizeSprite);
 
 	void dessinerJeu(Grille* grille);
 

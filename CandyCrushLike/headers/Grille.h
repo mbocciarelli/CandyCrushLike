@@ -11,7 +11,7 @@ struct Cell {
     int h;
     int l;
 
-    Cell() {};
+    Cell() : h(0), l(0) {};
     Cell(int h, int l) : h(h), l(l) {}
 };
 
@@ -55,7 +55,8 @@ public:
     };
 
     Item* getArrItem(int h, int l) const {
-        return this->array[(h * (int)this->hauteur) + l];
+        int temp = (h * this->hauteur) + l;
+        return this->array[temp];
     };
 
     void setArrItem(Item* val) {

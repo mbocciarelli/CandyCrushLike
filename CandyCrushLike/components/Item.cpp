@@ -1,6 +1,7 @@
 #include "../headers/Item.h"
 
 Item::Item() {
+    name = Bonbon::AUCUN;
 	s = new sf::Sprite();
 }
 
@@ -10,8 +11,6 @@ Item::Item(sf::Sprite* sprite, Bonbon name)
 }
 
 Bonbon Item::regenerateItem(int min, int max) {
-    Bonbon b;
-
     min -= 1;
     max -= 1;
 
