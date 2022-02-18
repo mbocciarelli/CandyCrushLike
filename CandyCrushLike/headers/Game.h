@@ -54,6 +54,7 @@ private :
 	/*
 		Objectifs
 	*/
+	bool objectifIsFinish = false;
 
 	int coutSwap = 0;
 	int maxSwap = 0;
@@ -70,6 +71,8 @@ public :
 
 	void StartGame();
 
+	void RestartGame();
+
 	void CalculParameters();
 
 	void GenerateObjectifs();
@@ -78,6 +81,18 @@ public :
 		coutObjectifs.at(place) += value;
 		if(coutObjectifs.at(place) > maxValue)
 			coutObjectifs.at(place) = maxValue;
+	}
+
+	void checkObjectifs() {
+		int i = 0;
+		objectifIsFinish = true;
+		for (const auto& kv : objectifs) {
+			if (kv.second != coutObjectifs.at(i)) {
+				objectifIsFinish = false;
+				break;
+			}
+			i++;
+		}
 	}
 
 	void CalculSizeCell();
@@ -91,6 +106,8 @@ public :
 	void loadSprite(Grille* grille, int widthGrille, int heightGrille, int xFirstPoint, int yFirstPoint, int sizeCell, double sizeSprite);
 
 	void dessinerJeu(Grille* grille);
+
+	void dessinerResultat(bool result);
 
 	Bonbon generateBonbon(int min, int max);
 
