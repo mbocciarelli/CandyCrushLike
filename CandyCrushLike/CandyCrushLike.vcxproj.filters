@@ -65,4 +65,9 @@
       <Filter>Fichiers de ressources</Filter>
     </Image>
   </ItemGroup>
+  <ItemGroup>
+    <Font Include="asset\aAbstractGroovy.ttf">
+      <Filter>Fichiers de ressources</Filter>
+    </Font>
+  </ItemGroup>
 </Project>

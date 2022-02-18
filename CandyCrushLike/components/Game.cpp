@@ -6,9 +6,11 @@
 
 void Game::StartGame() {
 
+    std::srand(std::time(nullptr));
+
     CalculParameters();
 
-    std::srand(std::time(nullptr));
+    GenerateObjectifs();
 
     Grille* grille = load(widthGrille, heightGrille, xFirstPoint, yFirstPoint, sizeCell, sizeSprite);
 
@@ -30,6 +32,38 @@ void Game::CalculParameters() {
     CalculSizeCell();
 
     CalculSizeSprite();
+}
+
+void Game::GenerateObjectifs() {
+    int random = rand() % 2 + 1;
+    Bonbon name = Bonbon::AUCUN;
+    int coutBonbonNeed;
+    switch (random) {
+        case 1:
+            coutObjectifs.reserve(1);
+            maxSwap = rand() % 20 + 10;
+            
+            name = generateBonbon(1, 6);
+            coutBonbonNeed = rand() % 23 + 12;
+
+            objectifs.emplace(name, coutBonbonNeed);
+            coutObjectifs.push_back(0);
+            
+            break;
+        case 2:
+        default:
+            coutObjectifs.reserve(2);
+            maxSwap = rand() % 31 + 23;
+
+            for (int i = 0; i < 2; i++) {
+                name = generateBonbonWithExcludeBonbon(1, 6, (int)name);
+                coutBonbonNeed = rand() % 18 + 13;
+
+                objectifs.emplace(name, coutBonbonNeed);
+                coutObjectifs.push_back(0);
+            }
+            break;
+    }
 }
 
 void Game::CalculSizeCell() {
@@ -112,10 +146,12 @@ void Game::checkMouseEvent() {
                 break;
             }
 
-            if (!IsAroundPrevCell(cell))
-                break;
-
             changeAlphaColor(prevCellClick, 255);
+
+            if (!IsAroundPrevCell(cell)) {
+                checkPrevCell = false;
+                break;
+            }
 
             if (prevCellClick.h == cell.h && prevCellClick.l == cell.l) {
                 checkPrevCell = false;
@@ -127,8 +163,22 @@ void Game::checkMouseEvent() {
             
             bool matchIsOk = grille->CheckMatch();
             if (matchIsOk) {
+                coutSwap++;
                 while (grille->CheckMatch()) {
                     grille->DestroyCells();
+
+                    std::map<Bonbon, int> destroy = grille->getBonbonToDestroy();
+                    int i = 0;
+                    for (const auto& kv : objectifs) {
+                        int value = destroy.at(kv.first);
+                        int maxValue = kv.second;
+                        if (value > 0) {
+                            addCoutObjectifs(i, value, maxValue);
+                        }
+                        i++;
+                    }
+                    grille->clearBonbonToDestroy();
+
                     dessinerJeu(grille);
                     grille->ReorganizeCells();
                     grille->RegenerateCells();
@@ -200,14 +250,14 @@ void Game::loadSprite(Grille* grille, int widthGrille, int heightGrille, int xFi
             Bonbon itemName = item->regenerateItem(1, 6); // 6 Textures max
             if (i > 1) {
                 if (grille->getArrItem(i - 1, j)->getName() == itemName && grille->getArrItem(i - 2, j)->getName() == itemName) {
-                    itemName = generateItemWithExcludeItem(1, 6, (int)itemName);
+                    itemName = generateBonbonWithExcludeBonbon(1, 6, (int)itemName);
                     item->setName(itemName);
                 }
             }
 
             if (j > 1) {
                 if (grille->getArrItem(i, j - 1)->getName() == itemName && grille->getArrItem(i, j - 2)->getName() == itemName) {
-                    itemName = generateItemWithExcludeItem(1, 6, (int)itemName);
+                    itemName = generateBonbonWithExcludeBonbon(1, 6, (int)itemName);
                     item->setName(itemName);
                 }
             }
@@ -231,7 +281,66 @@ void Game::dessinerJeu(Grille* grille) {
         }
     }
 
+    afficherObjectifs();
+
     window.display();
+}
+
+void Game::afficherObjectifs() {    
+    if (!font.loadFromFile("./asset/aAbstractGroovy.ttf"))
+        return;
+
+    int xText = sizeCell * grille->getLargeur() + 500;
+    int yText = 100;
+
+    sf::Text textObjectifs;
+    textObjectifs.setFont(font);
+    textObjectifs.setPosition(xText, yText);
+    textObjectifs.setString("Objectifs");
+    textObjectifs.setCharacterSize(36);
+
+    window.draw(textObjectifs);
+
+    int offsetY = 75;
+    int i = 0;
+    for (const auto& kv : objectifs) {
+
+        sf::Sprite bonbonSprite;
+        bonbonSprite.setTexture(*grille->getTexture(kv.first));
+        bonbonSprite.setPosition(xText, yText + offsetY);
+
+        sf::Text bonbonText;
+        bonbonText.setFont(font);
+        bonbonText.setPosition(xText + 75, yText + offsetY + 5);
+        bonbonText.setString(std::to_string(coutObjectifs.at(i)) + "/" + std::to_string(kv.second));
+        bonbonText.setCharacterSize(28);
+
+        window.draw(bonbonSprite);
+        window.draw(bonbonText);
+
+        i++;
+        offsetY += 75;
+    }
+
+    offsetY += 200;
+
+    sf::Text textCoutSwap;
+    textCoutSwap.setFont(font);
+    textCoutSwap.setPosition(xText, yText + offsetY);
+    textCoutSwap.setString("Coup(s) Restant(s)");
+    textCoutSwap.setCharacterSize(36);
+
+    window.draw(textCoutSwap);
+
+    offsetY += 50;
+
+    sf::Text textCoutSwapNumber;
+    textCoutSwapNumber.setFont(font);
+    textCoutSwapNumber.setPosition(xText, yText + offsetY);
+    textCoutSwapNumber.setString(std::to_string(coutSwap) + "/" + std::to_string(maxSwap));
+    textCoutSwapNumber.setCharacterSize(40);
+
+    window.draw(textCoutSwapNumber);
 }
 
 void Game::UpdateGrille() {
@@ -257,7 +366,7 @@ void Game::changeAlphaColor(Cell cell, int value) {
 }
 
 //Min et max son inclu dans le rand
-Bonbon Game::generateItem(int min, int max) {
+Bonbon Game::generateBonbon(int min, int max) {
     Bonbon b;
 
     min -= 1;
@@ -268,7 +377,7 @@ Bonbon Game::generateItem(int min, int max) {
     return (Bonbon)random;
 }
 
-Bonbon Game::generateItemWithExcludeItem(int min, int max, int valueExclude) {
+Bonbon Game::generateBonbonWithExcludeBonbon(int min, int max, int valueExclude) {
     Bonbon b;
 
     min -= 1;

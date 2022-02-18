@@ -13,6 +13,9 @@
 
 class Game {
 private : 
+	/*
+		Paramétres
+	*/
 	int wWidth = 1920;
 	int wHeight = 1080;
 
@@ -27,12 +30,37 @@ private :
 	int sizeCell;
 	float sizeSprite;
 
+	/*
+		Text
+	*/
+
+	sf::Font font;
+
+	/*
+		Click
+	*/
+
 	Cell prevCellClick;
 	bool checkPrevCell = false;
+
+	/*
+		Fenêtre
+	*/
 
 	Grille* grille;
 
 	sf::RenderWindow window;
+
+	/*
+		Objectifs
+	*/
+
+	int coutSwap = 0;
+	int maxSwap;
+	std::map<Bonbon, int> objectifs;
+	std::vector<int> coutObjectifs;
+
+	void afficherObjectifs();
 
 public :
 	Game() {
@@ -42,6 +70,14 @@ public :
 	void StartGame();
 
 	void CalculParameters();
+
+	void GenerateObjectifs();
+
+	void addCoutObjectifs(int place, int value, int maxValue) {
+		coutObjectifs.at(place) += value;
+		if (coutObjectifs.at(place) > maxValue)
+			coutObjectifs.at(place) = maxValue;
+	}
 
 	void CalculSizeCell();
 
@@ -55,9 +91,9 @@ public :
 
 	void dessinerJeu(Grille* grille);
 
-	Bonbon generateItem(int min, int max);
+	Bonbon generateBonbon(int min, int max);
 
-	Bonbon generateItemWithExcludeItem(int min, int max, int valueExclude);
+	Bonbon generateBonbonWithExcludeBonbon(int min, int max, int valueExclude);
 
 	bool eventClickLeft(sf::Event event);
 

@@ -21,6 +21,7 @@ private:
     int largeur;
     std::vector<Item*> array;
     std::vector<Cell> arrayToDestruct;
+    std::map<Bonbon, int> bonbonToDestroy;
     std::map<Bonbon, sf::Texture*> mapTexture;
 
     struct offset
@@ -64,6 +65,16 @@ public:
     void setArray(std::vector<Item*> arr) {
         this->array = arr;
     };
+
+    std::map<Bonbon, int> getBonbonToDestroy() const {
+        return bonbonToDestroy;
+    }
+
+    void clearBonbonToDestroy() {
+        for (const auto& kv : bonbonToDestroy) {
+            bonbonToDestroy.at(kv.first) = 0;
+        }
+    }
 
     void loadTexture(Bonbon name, std::string path) {
         createNewTexture(name);
