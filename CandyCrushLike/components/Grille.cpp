@@ -7,12 +7,22 @@ Grille::Grille() {
     this->hauteur = 10;
     this->largeur = 10;
     this->array.reserve(hauteur * largeur);
+
+    for (int i = 0; i < 6; i++) {
+        bonbonToDestroy.emplace((Bonbon)i, 0);
+    }
+
 }
 
 Grille::Grille(int h, int l) {
     this->hauteur = h;
     this->largeur = l;
     this->array.reserve(hauteur * largeur);
+
+    for (int i = 0; i < 6; i++) {
+        bonbonToDestroy.emplace((Bonbon)i, 0);
+    }
+
 }
 
 bool Grille::checkIfPlayable() {
@@ -252,6 +262,10 @@ void Grille::DestroyCells() {
         std::cout << "(" << arrayToDestruct.at(i).h << "," << arrayToDestruct.at(i).l << ")" << std::endl;
         int h = arrayToDestruct.at(i).h;
         int l = arrayToDestruct.at(i).l;
+
+        Bonbon name = getArrItem(h, l)->getName();
+        if(name != Bonbon::AUCUN)
+            bonbonToDestroy.at(name)++;
 
         getArrItem(h, l)->setName(Bonbon::AUCUN);
     }
