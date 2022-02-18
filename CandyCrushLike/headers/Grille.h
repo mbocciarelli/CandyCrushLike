@@ -92,4 +92,6 @@ public:
 
     void SwapCell(Cell from, Cell to);
 
+    void ReplaceCells();
+
 };

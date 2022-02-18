@@ -247,7 +247,9 @@ bool Grille::IsSameBonbon(int hauteur, int largeur, offset item1, offset item2, 
 }
 
 void Grille::DestroyCells() {
+    std::cout << "(new_move)" << std::endl;
     for (int i = 0; i < arrayToDestruct.size(); i++) {
+        std::cout << "(" << arrayToDestruct.at(i).h << "," << arrayToDestruct.at(i).l << ")" << std::endl;
         int h = arrayToDestruct.at(i).h;
         int l = arrayToDestruct.at(i).l;
 
@@ -282,9 +284,9 @@ void Grille::RegenerateCells() {
                 getArrItem(h, l)->getSprite()->setTexture(*getTexture(name));
             }
         }
-
     }
 }
+
 
 void Grille::SwapCell(Cell from, Cell to) {
     Item* fromItem = getArrItem(from.h, from.l);
