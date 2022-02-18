@@ -14,6 +14,8 @@ public:
 
     Item(sf::Sprite*, Bonbon);
 
+    Bonbon regenerateItem(int min, int max);
+
 
     /* Getter & Setter*/
     void setSprite(sf::Sprite* sprite) {

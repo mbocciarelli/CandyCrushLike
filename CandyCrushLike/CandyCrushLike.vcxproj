@@ -151,21 +151,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="components\candy.cpp" />
+    <ClCompile Include="components\Game.cpp" />
     <ClCompile Include="components\Grille.cpp" />
     <ClCompile Include="components\Item.cpp" />
-    <ClCompile Include="components\sfml_test.cpp" />
-    <ClCompile Include="components\test.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bonbon.h" />
-    <ClInclude Include="headers\candy.h" />
+    <ClInclude Include="headers\Bonbon.h" />
+    <ClInclude Include="headers\Game.h" />
     <ClInclude Include="headers\Grille.h" />
     <ClInclude Include="headers\Item.h" />
-    <ClInclude Include="headers\main.h" />
-    <ClInclude Include="headers\sfml_test.h" />
-    <ClInclude Include="headers\test.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="asset\Blue.png" />

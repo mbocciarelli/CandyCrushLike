@@ -198,7 +198,7 @@ void Grille::testLineColumn(Bonbon& previousCandy, int* nb, std::vector<Cell>* t
     Bonbon candyTest;
     candyTest = getArrItem(h, l)->getName();
 
-    if (previousCandy == candyTest) {
+    if (previousCandy == candyTest && candyTest != Bonbon::AUCUN) {
         tempPositions->push_back(Cell(h, l));
         *nb = *nb + 1;
     }
@@ -215,7 +215,7 @@ void Grille::testLineColumn(Bonbon& previousCandy, int* nb, std::vector<Cell>* t
 }
 
 bool Grille::CheckMatch() {
-    Bonbon previousCandy = Bonbon::AUCUN;
+   Bonbon previousCandy = Bonbon::AUCUN;
     int nb = 1;
     std::vector<Cell> tempPositions;
     for (int h = 0; h < this->hauteur; h++) {
@@ -258,19 +258,31 @@ void Grille::DestroyCells() {
 }
 
 void Grille::ReorganizeCells() {
-    for (int i = getHauteur() - 2; i >= 0; i--) {
-        for (int j = getLargeur() - 2; j >= 0; j--) {
+    for (int i = getHauteur() - 1; i >= 0; i--) {
+        for (int j = getLargeur() - 1; j >= 0; j--) {
             if (getArrItem(i, j)->getName() == Bonbon::AUCUN) {
                 int saveHauteur = i;
                 do {
                     saveHauteur--;
                 } while (saveHauteur > 0 && getArrItem(saveHauteur, j)->getName() == Bonbon::AUCUN);
-
+                
                 if (saveHauteur >= 0 && getArrItem(saveHauteur, j)->getName() != Bonbon::AUCUN) {
                     SwapCell(Cell(saveHauteur, j), Cell(i, j));
                 }
             }
         }
+    }
+}
+
+void Grille::RegenerateCells() {
+    for (int h = 0; h < getHauteur(); ++h) {
+        for (int l = 0; l < getLargeur(); ++l) {
+            if (getArrItem(h, l)->getName() == Bonbon::AUCUN) {
+                Bonbon name = getArrItem(h, l)->regenerateItem(1, 6);
+                getArrItem(h, l)->getSprite()->setTexture(*getTexture(name));
+            }
+        }
+
     }
 }
 

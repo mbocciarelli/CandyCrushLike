@@ -1,11 +1,11 @@
 #pragma once
 enum class Bonbon
 {
-    BLUE,
+    AUCUN = -1,
+    BLUE = 0,
     GREEN,
     ORANGE,
     PURPLE,
     RED,
-    YELLOW,
-    AUCUN,
+    YELLOW
 };

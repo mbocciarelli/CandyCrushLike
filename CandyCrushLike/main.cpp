@@ -1,11 +1,10 @@
 #include <iostream>
-#include "./headers/Grille.h"
-#include "./headers/Item.h"
-#include "./headers/candy.h"
+#include "headers/Game.h"
 
 int main()
 {
-    sfml_test();
+    Game* game = new Game();
+    game->StartGame();
 
     return 0;
 }
