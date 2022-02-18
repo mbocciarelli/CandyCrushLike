@@ -79,8 +79,6 @@ void Game::GenerateObjectifs() {
             }
             break;
     }
-
-    maxSwap = 2;
 }
 
 void Game::CalculSizeCell() {
