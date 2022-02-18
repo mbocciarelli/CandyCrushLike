@@ -12,14 +12,29 @@ void Game::StartGame() {
 
     GenerateObjectifs();
 
-    Grille* grille = load(widthGrille, heightGrille, xFirstPoint, yFirstPoint, sizeCell, sizeSprite);
+    grille = load(widthGrille, heightGrille, xFirstPoint, yFirstPoint, sizeCell, sizeSprite);
 
     while (window.isOpen()) {
 
         checkMouseEvent();
 
-        dessinerJeu(grille);
+        if (objectifIsFinish || coutSwap >= maxSwap)
+            dessinerResultat(objectifIsFinish);
+        else 
+            dessinerJeu(grille);
     }
+}
+
+void Game::RestartGame() {
+    coutSwap = 0;
+    objectifs.clear();
+    coutObjectifs.clear();
+    objectifIsFinish = false;
+    checkPrevCell = false;
+
+    GenerateObjectifs();
+
+    grille = load(widthGrille, heightGrille, xFirstPoint, yFirstPoint, sizeCell, sizeSprite);
 }
 
 void Game::CalculParameters() {
@@ -64,6 +79,8 @@ void Game::GenerateObjectifs() {
             }
             break;
     }
+
+    maxSwap = 2;
 }
 
 void Game::CalculSizeCell() {
@@ -113,7 +130,7 @@ Grille* Game::load(int widthGrille, int heightGrille, int xFirstPoint, int yFirs
     loadSprite(grille, widthGrille, heightGrille, xFirstPoint, yFirstPoint, sizeCell, sizeSprite);
 
     if (widthGrille > 2 && heightGrille > 2) {
-        std::cout << grille->checkIfPlayable();
+        grille->checkIfPlayable();
     }
 
     return grille;
@@ -137,6 +154,11 @@ void Game::checkMouseEvent() {
 
             if (!eventClickLeft(event))
                 break;
+
+            if (objectifIsFinish || coutSwap >= maxSwap) {
+                RestartGame();
+                break;
+            }
 
             if (!IsOnGrid(event.mouseButton.x, event.mouseButton.y))
                 break;
@@ -186,6 +208,10 @@ void Game::checkMouseEvent() {
                     dessinerJeu(grille);
                     grille->ReorganizeCells();
                     grille->RegenerateCells();
+
+                    checkObjectifs();
+                    if (objectifIsFinish)
+                        break;
                 }
             }
             else {
@@ -287,6 +313,23 @@ void Game::dessinerJeu(Grille* grille) {
 
     afficherObjectifs();
 
+    window.display();
+}
+
+void Game::dessinerResultat(bool result) {
+    if (!font.loadFromFile("./asset/aAbstractGroovy.ttf"))
+        return;
+
+    window.clear(sf::Color::Black);
+
+    sf::Text textResult;
+    textResult.setFont(font);
+    textResult.setPosition((float)(wWidth / 2.5), (float)(wHeight / 2.5));
+    std::string resultat = (result ? "Gagné" : "Perdu");
+    textResult.setString("Resultat : " + resultat + "\n\nClick pour recommencer");
+    textResult.setCharacterSize(36);
+
+    window.draw(textResult);
     window.display();
 }
 
