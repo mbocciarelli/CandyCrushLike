@@ -6,6 +6,7 @@
 #include <map>
 #include <SFML/Graphics/Texture.hpp>
 #include "../headers/Bonbon.h"
+#include "../SFML/Graphics/RenderWindow.hpp"
 
 struct Cell {
     int h;
@@ -36,6 +37,30 @@ private:
     };
 
     bool IsSameBonbon(int hauteur, int largeur, offset item1, offset item2, offset item3);
+
+    void delay(float timeDelay) {
+        sf::Clock clock;
+        sf::Time lastTime;
+        do {
+            lastTime = clock.getElapsedTime();
+        } while (lastTime.asSeconds() < timeDelay);
+    }
+
+    void redessinerJeu(sf::RenderWindow* window) {
+
+        window->clear(sf::Color::Black);
+
+        for (int i = 0; i < getHauteur(); i++) {
+            for (int j = 0; j < getLargeur(); j++) {
+                if (getArrItem(i, j)->getName() == Bonbon::AUCUN)
+                    continue;
+
+                window->draw(*getArrItem(i, j)->getSprite());
+            }
+        }
+
+        window->display();
+    }
 
 public:
     Grille();
@@ -98,9 +123,9 @@ public:
 
     void DestroyCells();
 
-    void ReorganizeCells();
+    void ReorganizeCells(sf::RenderWindow* window);
 
-    void RegenerateCells();
+    void RegenerateCells(sf::RenderWindow* window);
 
     void SwapCell(Cell from, Cell to);
 

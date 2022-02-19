@@ -204,8 +204,8 @@ void Game::checkMouseEvent() {
                     grille->clearBonbonToDestroy();
 
                     dessinerJeu(grille);
-                    grille->ReorganizeCells();
-                    grille->RegenerateCells();
+                    grille->ReorganizeCells(&window);
+                    grille->RegenerateCells(&window);
 
                     checkObjectifs();
                     if (objectifIsFinish)

@@ -273,7 +273,7 @@ void Grille::DestroyCells() {
     arrayToDestruct.clear();
 }
 
-void Grille::ReorganizeCells() {
+void Grille::ReorganizeCells(sf::RenderWindow* window) {
     for (int i = getHauteur() - 1; i >= 0; i--) {
         for (int j = getLargeur() - 1; j >= 0; j--) {
             if (getArrItem(i, j)->getName() == Bonbon::AUCUN) {
@@ -284,18 +284,24 @@ void Grille::ReorganizeCells() {
                 
                 if (saveHauteur >= 0 && getArrItem(saveHauteur, j)->getName() != Bonbon::AUCUN) {
                     SwapCell(Cell(saveHauteur, j), Cell(i, j));
+
+                    delay(0.1f);
+                    redessinerJeu(window);
                 }
             }
         }
     }
 }
 
-void Grille::RegenerateCells() {
+void Grille::RegenerateCells(sf::RenderWindow* window) {
     for (int h = 0; h < getHauteur(); ++h) {
         for (int l = 0; l < getLargeur(); ++l) {
             if (getArrItem(h, l)->getName() == Bonbon::AUCUN) {
                 Bonbon name = getArrItem(h, l)->regenerateItem(1, 6);
                 getArrItem(h, l)->getSprite()->setTexture(*getTexture(name));
+
+                delay(0.1f);
+                redessinerJeu(window);
             }
         }
 
