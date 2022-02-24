@@ -1,7 +1,7 @@
 
 #include "../headers/MainMenu.h"
 
-MainMenu::MainMenu(std::shared_ptr<Context> &context)
+MainMenu::MainMenu(std::shared_ptr<game::Context> &context)
         : m_context(context), m_isPlayButtonSelected(true),
           m_isPlayButtonPressed(false), m_isExitButtonSelected(false),
           m_isExitButtonPressed(false)
@@ -23,6 +23,7 @@ void MainMenu::Init()
                           m_gameTitle.getLocalBounds().height / 2);
     m_gameTitle.setPosition(m_context->m_window->getSize().x / 2,
                             m_context->m_window->getSize().y / 2 - 150.f);
+    m_gameTitle.setCharacterSize(40);
 
     // Play Button
     m_playButton.setFont(m_context->m_assets->GetFont(MAIN_FONT));
@@ -31,7 +32,7 @@ void MainMenu::Init()
                            m_playButton.getLocalBounds().height / 2);
     m_playButton.setPosition(m_context->m_window->getSize().x / 2,
                              m_context->m_window->getSize().y / 2 - 25.f);
-    m_playButton.setCharacterSize(20);
+    m_playButton.setCharacterSize(30);
 
     // Exit Button
     m_exitButton.setFont(m_context->m_assets->GetFont(MAIN_FONT));
@@ -40,7 +41,7 @@ void MainMenu::Init()
                            m_exitButton.getLocalBounds().height / 2);
     m_exitButton.setPosition(m_context->m_window->getSize().x / 2,
                              m_context->m_window->getSize().y / 2 + 25.f);
-    m_exitButton.setCharacterSize(20);
+    m_exitButton.setCharacterSize(30);
 }
 
 void MainMenu::ProcessInput()

@@ -5,7 +5,7 @@
 #include "../headers/Game.h"
 #include "../headers/MainMenu.h"
 
-Game::Game(): m_context(std::make_shared<Context>()) {
+Game::Game(): m_context(std::make_shared<game::Context>()) {
     //m_context->m_window->create(sf::VideoMode(wWidth, wHeight), "SFML works!", sf::Style::Close | sf::Style::Titlebar);
     m_context->m_window->create(sf::VideoMode(wWidth, wHeight), "SFML works!", sf::Style::Close | sf::Style::Titlebar);
     m_context->m_states->Add(make_unique<MainMenu>(m_context));

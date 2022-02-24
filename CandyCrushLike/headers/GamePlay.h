@@ -12,7 +12,7 @@
 class GamePlay : public Engine::State
 {
 private:
-    std::shared_ptr<Context> m_context;
+    std::shared_ptr<game::Context> m_context;
 
     /*
         Param�tres
@@ -30,6 +30,8 @@ private:
     int yFirstPoint = 0;
     int sizeCell = 0;
     double sizeSprite = 0;
+
+    sf::Time TIME_PER_FRAME;
 
     /*
         Text
@@ -62,10 +64,11 @@ private:
     std::map<Bonbon, int> objectifs;
     std::vector<int> coutObjectifs;
 
+
     void afficherObjectifs();
 
 public:
-    GamePlay(std::shared_ptr<Context> &context);
+    GamePlay(std::shared_ptr<game::Context> &context);
     ~GamePlay();
 
     void Init() override;
@@ -104,18 +107,27 @@ public:
         return event.mouseButton.button == sf::Mouse::Left;
     }
 
+    void delay(float timeDelay){
+        sf::Clock clock;
+        sf::Time lastTime;
+        do {
+            lastTime = clock.getElapsedTime();
+        }while(lastTime.asSeconds() < timeDelay);
+    }
+
+    void RegenerateCells();
 
     void CalculSizeCell();
 
     void CalculSizeSprite();
+
+    void ReorganizeCells();
 
     Grille* load(int widthGrille, int heightGrille, int xFirstPoint, int yFirstPoint, int sizeCell, double sizeSprite);
 
     void loadTexture(Grille* grille);
 
     void loadSprite(Grille* grille, int widthGrille, int heightGrille, int xFirstPoint, int yFirstPoint, int sizeCell, double sizeSprite);
-
-    void dessinerJeu(Grille* grille);
 
     void dessinerResultat(bool result);
 

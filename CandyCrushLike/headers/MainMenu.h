@@ -13,7 +13,7 @@
 class MainMenu : public Engine::State
 {
 private:
-    std::shared_ptr<Context> m_context;
+    std::shared_ptr<game::Context> m_context;
     sf::Text m_gameTitle;
     sf::Text m_playButton;
     sf::Text m_exitButton;
@@ -25,7 +25,7 @@ private:
     bool m_isExitButtonPressed;
 
 public:
-    MainMenu(std::shared_ptr<Context> &context);
+    MainMenu(std::shared_ptr<game::Context> &context);
     ~MainMenu();
 
     void Init() override;

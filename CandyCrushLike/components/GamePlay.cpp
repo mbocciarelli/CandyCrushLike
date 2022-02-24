@@ -2,7 +2,7 @@
 
 #include <SFML/Window/Event.hpp>
 
-GamePlay::GamePlay(std::shared_ptr<Context> &context)
+GamePlay::GamePlay(std::shared_ptr<game::Context> &context)
         : m_context(context)
 {
 }
@@ -81,9 +81,10 @@ void GamePlay::ProcessInput()
                         }
                         grille->clearBonbonToDestroy();
 
-                        dessinerJeu(grille);
-                        grille->ReorganizeCells();
-                        grille->RegenerateCells();
+                        Draw();
+                        delay(0.5f);
+                        ReorganizeCells();
+                        RegenerateCells();
 
                         checkObjectifs();
                         if (objectifIsFinish)
@@ -94,18 +95,15 @@ void GamePlay::ProcessInput()
                     grille->SwapCell(cell, prevCellClick);
                 }
 
-                dessinerJeu(grille);
-
                 break;
         }
     }
 }
 void GamePlay::Update(sf::Time deltaTime)
 {
+    TIME_PER_FRAME = deltaTime;
     if (objectifIsFinish || coutSwap >= maxSwap)
         dessinerResultat(objectifIsFinish);
-    else
-        dessinerJeu(grille);
 }
 void GamePlay::Draw()
 {
@@ -136,6 +134,39 @@ void GamePlay::Start()
 
     grille = load(widthGrille, heightGrille, xFirstPoint, yFirstPoint, sizeCell, sizeSprite);
 
+}
+
+void GamePlay::ReorganizeCells() {
+    for (int i = grille->getHauteur() - 1; i >= 0; i--) {
+        for (int j = grille->getLargeur() - 1; j >= 0; j--) {
+            if (grille->getArrItem(i, j)->getName() == Bonbon::AUCUN) {
+                int saveHauteur = i;
+                do {
+                    saveHauteur--;
+                } while (saveHauteur > 0 && grille->getArrItem(saveHauteur, j)->getName() == Bonbon::AUCUN);
+
+                if (saveHauteur >= 0 && grille->getArrItem(saveHauteur, j)->getName() != Bonbon::AUCUN) {
+                    grille->SwapCell(Cell(saveHauteur, j), Cell(i, j));
+                    delay(0.1f);
+                    Draw();
+                }
+            }
+        }
+    }
+}
+
+void GamePlay::RegenerateCells() {
+    for (int h = 0; h < grille->getHauteur(); ++h) {
+        for (int l = 0; l < grille->getLargeur(); ++l) {
+            if (grille->getArrItem(h, l)->getName() == Bonbon::AUCUN) {
+                Bonbon name = grille->getArrItem(h, l)->regenerateItem(1, 6);
+                grille->getArrItem(h, l)->getSprite()->setTexture(*grille->getTexture(name));
+                delay(0.1f);
+                Draw();
+
+            }
+        }
+    }
 }
 
 
@@ -320,10 +351,6 @@ void GamePlay::loadSprite(Grille* grille, int widthGrille, int heightGrille, int
             UpdateSizeItem(grille->getArrItem(i, j), i, j);
         }
     }
-}
-
-void GamePlay::dessinerJeu(Grille* grille) {
-
 }
 
 void GamePlay::dessinerResultat(bool result) {
